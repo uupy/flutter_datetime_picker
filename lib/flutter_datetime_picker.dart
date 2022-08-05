@@ -322,18 +322,21 @@ class _DatePickerState extends State<_DatePickerComponent> {
 
   @override
   Widget build(BuildContext context) {
+    final _route = widget.route;
     DatePickerTheme theme = widget.route.theme;
+
     return GestureDetector(
       child: AnimatedBuilder(
-        animation: widget.route.animation!,
+        animation: _route.animation!,
         builder: (BuildContext context, Widget? child) {
           final double bottomPadding = MediaQuery.of(context).padding.bottom;
           return ClipRect(
             child: CustomSingleChildLayout(
               delegate: _BottomPickerLayout(
-                widget.route.animation!.value,
+                _route.animation!.value,
                 theme,
-                showTitleActions: widget.route.showTitleActions!,
+                showHeader: _route.showTitleActions! || _route.header != null,
+                showFooter: _route.footer != null,
                 bottomPadding: bottomPadding,
               ),
               child: GestureDetector(
@@ -511,7 +514,7 @@ class _DatePickerState extends State<_DatePickerComponent> {
     }
 
     return Container(
-      height: theme.titleHeight,
+      height: theme.headerHeight,
       decoration: BoxDecoration(
         color: theme.headerColor ?? theme.backgroundColor,
       ),
@@ -519,7 +522,7 @@ class _DatePickerState extends State<_DatePickerComponent> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Container(
-            height: theme.titleHeight,
+            height: theme.headerHeight,
             child: CupertinoButton(
               pressedOpacity: 0.3,
               padding: EdgeInsetsDirectional.only(start: 16, top: 0),
@@ -536,7 +539,7 @@ class _DatePickerState extends State<_DatePickerComponent> {
             ),
           ),
           Container(
-            height: theme.titleHeight,
+            height: theme.headerHeight,
             child: CupertinoButton(
               pressedOpacity: 0.3,
               padding: EdgeInsetsDirectional.only(end: 16, top: 0),
@@ -571,21 +574,27 @@ class _BottomPickerLayout extends SingleChildLayoutDelegate {
     this.progress,
     this.theme, {
     this.itemCount,
-    this.showTitleActions,
+    this.showHeader,
+    this.showFooter,
     this.bottomPadding = 0,
   });
 
   final double progress;
   final int? itemCount;
-  final bool? showTitleActions;
+  final bool? showHeader;
+  final bool? showFooter;
   final DatePickerTheme theme;
   final double bottomPadding;
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
     double maxHeight = theme.containerHeight;
-    if (showTitleActions == true) {
-      maxHeight += theme.titleHeight;
+    if (showHeader == true) {
+      maxHeight += theme.headerHeight;
+    }
+
+    if (showFooter == true) {
+      maxHeight += theme.footerHeight;
     }
 
     return BoxConstraints(
