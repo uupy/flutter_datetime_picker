@@ -356,12 +356,15 @@ class _DatePickerState extends State<_DatePickerComponent> {
   }
 
   Widget _renderPickerView(DatePickerTheme theme) {
+    final _header = widget.route.header;
+    final _footer = widget.route.footer;
+
     return Column(
       children: <Widget>[
-        if (widget.route.showTitleActions == true || widget.header != null)
+        if (widget.route.showTitleActions == true || _header != null)
           _renderTitleActionsView(theme),
         _renderItemView(theme),
-        if (widget.footer != null) widget.footer!
+        if (_footer != null) _footer
       ],
     );
   }
@@ -499,11 +502,12 @@ class _DatePickerState extends State<_DatePickerComponent> {
 
   // Title View
   Widget _renderTitleActionsView(DatePickerTheme theme) {
+    final _header = widget.route.header;
     final done = _localeDone();
     final cancel = _localeCancel();
 
-    if (widget.header != null) {
-      return widget.header!;
+    if (_header != null) {
+      return _header;
     }
 
     return Container(
